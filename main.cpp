@@ -204,12 +204,10 @@ void cancelarReserva(char sala[FILAS][ASIENTOS], char fila, int numeroAsiento) {
 bool esCuadradoMagico(int matriz[3][3]) {
     int sumaMagica = 0;
 
-    // Calcular la suma de la primera fila como referencia
     for (int j = 0; j < 3; j++) {
         sumaMagica += matriz[0][j];
     }
 
-    // Verificar sumas de filas
     for (int i = 1; i < 3; i++) {
         int sumaFila = 0;
         for (int j = 0; j < 3; j++) {
@@ -218,7 +216,6 @@ bool esCuadradoMagico(int matriz[3][3]) {
         if (sumaFila != sumaMagica) return false;
     }
 
-    // Verificar sumas de columnas
     for (int j = 0; j < 3; j++) {
         int sumaColumna = 0;
         for (int i = 0; i < 3; i++) {
@@ -227,14 +224,12 @@ bool esCuadradoMagico(int matriz[3][3]) {
         if (sumaColumna != sumaMagica) return false;
     }
 
-    // Verificar la diagonal principal
     int sumaDiagonal1 = 0;
     for (int i = 0; i < 3; i++) {
         sumaDiagonal1 += matriz[i][i];
     }
     if (sumaDiagonal1 != sumaMagica) return false;
 
-    // Verificar la diagonal secundaria
     int sumaDiagonal2 = 0;
     for (int i = 0; i < 3; i++) {
         sumaDiagonal2 += matriz[i][2 - i];
@@ -243,6 +238,102 @@ bool esCuadradoMagico(int matriz[3][3]) {
 
     return true;
 }
+
+const int FILAS1 = 7;
+const int COLUMNAS1 = 8;
+
+bool esEstrella(int matriz[FILAS1][COLUMNAS1], int i, int j) {
+    // Condición para verificar si el elemento (i, j) es una estrella
+    int suma = matriz[i][j] + matriz[i][j - 1] + matriz[i][j + 1]
+               + matriz[i - 1][j] + matriz[i + 1][j];
+    return (suma / 5.0) > 6;
+}
+
+int contarEstrellas(int matriz[FILAS1][COLUMNAS1]) {
+    int cuentaEstrellas = 0;
+
+    // Recorre la matriz sin tocar los bordes
+    for (int i = 1; i < FILAS1 - 1; i++) {
+        for (int j = 1; j < COLUMNAS1 - 1; j++) {
+            if (esEstrella(matriz, i, j)) {
+                cuentaEstrellas++;
+            }
+        }
+    }
+
+    return cuentaEstrellas;
+}
+
+const int N = 5;
+
+// Función para imprimir una matriz
+void imprimirMatriz(int matriz[N][N]) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            cout << matriz[i][j] << "\t";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+// Función para rotar la matriz 90 grados
+void rotar90(int matriz[N][N], int rotada[N][N]) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            rotada[j][N - i - 1] = matriz[i][j];
+        }
+    }
+}
+
+// Función para copiar una matriz
+void copiarMatriz(int origen[N][N], int destino[N][N]) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            destino[i][j] = origen[i][j];
+        }
+    }
+}
+
+bool interseccionRectangulos(int A[4], int B[4], int C[4]) {
+    // Calculamos las coordenadas de la esquina superior izquierda del rectángulo de intersección
+    int x_interseccion = max(A[0], B[0]);
+    int y_interseccion = max(A[1], B[1]);
+
+    // Calculamos las coordenadas de la esquina inferior derecha del rectángulo de intersección
+    int x_final_interseccion = min(A[0] + A[2], B[0] + B[2]);
+    int y_final_interseccion = min(A[1] + A[3], B[1] + B[3]);
+
+    // Verificamos si hay una intersección válida (si las dimensiones son positivas)
+    if (x_interseccion < x_final_interseccion && y_interseccion < y_final_interseccion) {
+        // Llenamos el arreglo C con los datos de la intersección
+        C[0] = x_interseccion;
+        C[1] = y_interseccion;
+        C[2] = x_final_interseccion - x_interseccion;  // Ancho
+        C[3] = y_final_interseccion - y_interseccion;  // Alto
+        return true;
+    } else {
+        // No hay intersección
+        return false;
+    }
+}
+
+// Función para calcular el factorial de un número
+unsigned long long factorial(int num) {
+    unsigned long long result = 1;
+    for (int i = 2; i <= num; i++) {
+        result *= i;
+    }
+    return result;
+}
+
+// Función para calcular las combinaciones C(2n, n)
+unsigned long long combinaciones(int n) {
+    unsigned long long num = factorial(2 * n);  // (2n)!
+    unsigned long long denom = factorial(n) * factorial(n);  // (n!) * (n!)
+    return num / denom;
+}
+
 
 int main() {
     int opcion;
@@ -304,34 +395,32 @@ int main() {
         }
         break;
         case 2: {
-            const int TAMANIO = 200;
-            char letras[TAMANIO];
-            int contador[26] = {0}; // Arreglo para contar la cantidad de cada letra
+            const int tamaño = 200;
+            char letras[tamaño];
 
-            int seed = 12345;
-
-            auto rand_num = [&seed]() {
-                seed = (seed * 1103515245 + 12345) & 0x7FFFFFFF; // Generador de números pseudoaleatorios simple
-                return (seed % 26);
-            };
-
-            for (int i = 0; i < TAMANIO; i++) {
-                letras[i] = 'A' + rand_num(); // Genera una letra aleatoria entre 'A' y 'Z'
-                contador[letras[i] - 'A']++;  // Incrementa el contador de la letra correspondiente
+            srand(static_cast<unsigned int>(time(nullptr)));
+            for (int i=0; i<tamaño; i++){
+                letras[i] = 'A' + rand() % 26;
             }
 
-            // Imprimir el arreglo de letras
-            for (int i = 0; i < TAMANIO; i++) {
-                cout << letras[i];
+            cout<<"Arreglo de letras ";
+            for (int i=0; i<tamaño; i++){
+                cout<<letras[i];
             }
-            cout << endl;
+            cout<<endl;
 
-            // Imprimir la cantidad de repeticiones de cada letra
-            for (int i = 0; i < 26; i++) {
-                if (contador[i] > 0) {
-                    cout << char('A' + i) << ": " << contador[i] << endl;
+            int repeteciones[26]= {0};
+
+            for (int i=0; i<tamaño; i++){
+                ++repeteciones[letras[i]-'A'];
+            }
+
+            for (int i=0; i<26; i++){
+                if (repeteciones[i]>0){
+                    cout<<static_cast<char>('A'+i)<<": "<<repeteciones[i]<<endl;
                 }
             }
+
         }
         break;
         case 3:{
@@ -538,26 +627,76 @@ int main() {
             }
 
             if (esCuadradoMagico(matriz)) {
-                cout << "Es un cuadrado mágico." << endl;
+                cout << "Es un cuadrado magico." << endl;
             } else {
-                cout << "No es un cuadrado mágico." << endl;
+                cout << "No es un cuadrado magico." << endl;
             }
         }
         break;
         case 13:{
+            int matriz[FILAS1][COLUMNAS1] = {
+                {0, 3, 4, 0, 0, 0, 6, 8},
+                {5, 13, 6, 0, 0, 0, 2, 3},
+                {2, 6, 2, 7, 3, 0, 10, 0},
+                {0, 0, 4, 15, 4, 1, 6, 0},
+                {0, 0, 7, 12, 6, 9, 10, 4},
+                {5, 0, 6, 10, 6, 4, 8, 0}
+            };
 
-        }
+            int estrellas = contarEstrellas(matriz);
+            cout << "Numero de estrellas encontradas: " << estrellas << endl;
+       }
         break;
         case 14:{
+           int matriz[N][N];
+           int rotada90[N][N], rotada180[N][N], rotada270[N][N];
 
+           int contador = 1;
+           for (int i = 0; i < N; i++) {
+               for (int j = 0; j < N; j++) {
+                   matriz[i][j] = contador++;
+               }
+           }
+
+           cout << "Matriz original:" << endl;
+           imprimirMatriz(matriz);
+
+           rotar90(matriz, rotada90);
+           cout << "Matriz 90 grados:" << endl;
+           imprimirMatriz(rotada90);
+
+           rotar90(rotada90, rotada180);
+           cout << "Matriz 180 grados:" << endl;
+           imprimirMatriz(rotada180);
+
+           rotar90(rotada180, rotada270);
+           cout << "Matriz 270 grados:" << endl;
+           imprimirMatriz(rotada270);
         }
         break;
         case 15:{
+            int A[4] = {0, 0, 8, 4};  // {x, y, ancho, alto}
+            int B[4] = {5, 2, 6, 7};  // {x, y, ancho, alto}
+            int C[4];
+
+            if (interseccionRectangulos(A, B, C)) {
+                cout << "La interseccion de los rectangulos es: {"
+                     << C[0] << ", " << C[1] << ", " << C[2] << ", " << C[3] << "}" << endl;
+            } else {
+                cout << "Los rectangulos no tienen interseccion." << endl;
+            }
 
         }
         break;
         case 16:{
+            int n;
 
+            cout << "Ingresa el tamaño de la malla (n): ";
+            cin >> n;
+
+            unsigned long long caminos = combinaciones(n);
+
+            cout << "Para una malla de " << n << "x" << n << " puntos hay " << caminos << " caminos." << endl;
         }
         break;
         case 17:{
