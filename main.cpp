@@ -334,6 +334,15 @@ unsigned long long combinaciones(int n) {
     return num / denom;
 }
 
+int sumaDivisores(int n) {
+    int suma = 0;
+    for (int i = 1; i < n; i++) {
+        if (n % i == 0) {
+            suma += i;
+        }
+    }
+    return suma;
+}
 
 int main() {
     int opcion;
@@ -691,7 +700,7 @@ int main() {
         case 16:{
             int n;
 
-            cout << "Ingresa el tamaño de la malla (n): ";
+            cout << "Ingresa el tamano de la malla (n): ";
             cin >> n;
 
             unsigned long long caminos = combinaciones(n);
@@ -700,7 +709,21 @@ int main() {
         }
         break;
         case 17:{
+            int limite;
 
+            cout << "Ingresa un número: ";
+            cin >> limite;
+
+            int sumaAmigables = 0;
+
+            for (int a = 1; a < limite; a++) {
+                int b = sumaDivisores(a);
+                if (a != b && b < limite && sumaDivisores(b) == a) {
+                    sumaAmigables += a;
+                }
+            }
+
+            cout << "El resultado de la suma es: " << sumaAmigables << endl;
         }
         break;
         case 18:{
