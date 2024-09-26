@@ -109,13 +109,13 @@ void separarNumerosYTexto(const char* cadena, char* texto, char* numeros) {
     numeros[indexNumeros] = '\0';
 }
 
-int cadenaAentero(char cadena[]){
-    int i=0, n=0;
-    while (cadena[i] != '\0'){
-        n = 10*n + (cadena[i]- '0' );
-        i++;
+// Función para convertir un grupo de caracteres numéricos a entero
+int convertir_a_entero(char* arreglo, int inicio, int n) {
+    int numero = 0;
+    for (int i = 0; i < n; ++i) {
+        numero = numero * 10 + (arreglo[inicio + i] - '0');
     }
-    return n;
+    return numero;
 }
 
 
@@ -555,49 +555,63 @@ int main() {
         }
         break;
         case 9:{
-            {
-                int n;
-                cout<<"ingrese un numero n: ";
-                cin>>n;
+            int n;
+            char cadena[100]; // Suponemos que la cadena tiene un máximo de 100 caracteres
 
-                char cadena[100];
-                cout<<"ingrese una cadena de caracteres numericos: ";
-                cin>>cadena;
+            // Leer el valor de n y la cadena de caracteres
+            cout << "Ingresa el valor de n: ";
+            cin >> n;
+            cout << "Ingresa la cadena de caracteres numericos: ";
+            cin >> cadena;
 
-                cout<<"Original: "<<cadena<<endl;
-
-                int cadena_longitud = 0;
-                while (cadena[cadena_longitud] != '\0'){
-                    cadena_longitud++;
-                }
-
-                while (cadena_longitud % n != 0 ){
-                    for (int i = cadena_longitud; i>0; i--){
-                        cadena[i]= cadena[i-1];
-                    }
-                    cadena[0] = '0';
-                    cadena_longitud++;
-                }
-
-                int suma = 0;
-                cout<<"Suma: ";
-                for (int i=0; i<cadena_longitud; i += n ){
-                    char subcadena [10];
-                    for (int j = 0; j<n; j++){
-                        subcadena[j] = cadena[i + j];
-                    }
-                    int numero = cadenaAentero(subcadena);
-                    suma += numero;
-                    if (numero == 0 && i>0 ){
-                        cout<<"0";
-                    }
-                    else
-                        cout<<numero;
-                    if (i<cadena_longitud - n)
-                        cout<<"+";
-                }
-                cout<<" = "<<suma<<endl;
+            // Determinar la longitud de la cadena
+            int longitud = 0;
+            while (cadena[longitud] != '\0') {
+                longitud++;
             }
+
+            // Calcular cuántos dígitos se necesitan para completar un múltiplo de n
+            int resto = longitud % n;
+            int ceros_a_agregar = (resto == 0) ? 0 : (n - resto);
+
+            // Imprimir la cadena original
+            cout << "Original: " << cadena << endl;
+
+            // Inicializar la suma
+            int suma = 0;
+
+            // Si es necesario, agregamos ceros al principio y manejamos el primer bloque de dígitos
+            bool es_primero = true;
+            if (ceros_a_agregar > 0) {
+                int numero = 0; // Número ajustado con ceros a la izquierda
+                cout << "0";    // Imprimir el primer cero
+                for (int i = 1; i < ceros_a_agregar; ++i) {
+                    cout << "0"; // Imprimir los ceros restantes
+                }
+
+                // Procesar los primeros dígitos junto con los ceros añadidos
+                for (int i = 0; i < n - ceros_a_agregar; ++i) {
+                    numero = numero * 10 + (cadena[i] - '0');
+                }
+                suma += numero;
+                cout << numero;
+                es_primero = false;
+            }
+
+            // Continuamos procesando el resto de los números en bloques de n dígitos
+            for (int i = (n - ceros_a_agregar); i < longitud; i += n) {
+                if (!es_primero) {
+                    cout << "+";
+                }
+                int numero = convertir_a_entero(cadena, i, n);
+                suma += numero;
+                cout << numero;
+                es_primero = false;
+            }
+
+            // Imprimir el resultado final de la suma
+            cout << " = " << suma << endl;
+
 
         }
         break;
