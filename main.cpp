@@ -344,6 +344,47 @@ int sumaDivisores(int n) {
     return suma;
 }
 
+// Función para calcular el factorial de un número
+int factorial1(int n) {
+    int result = 1;
+    for (int i = 2; i <= n; ++i) {
+        result *= i;
+    }
+    return result;
+}
+
+// Función para encontrar la n-ésima permutación lexicográfica
+void nth_permutation(int n) {
+    int digits[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}; // dígitos del 0 al 9
+    int factorials[10];
+    bool used[10] = {false};
+
+    for (int i = 0; i < 10; ++i) {
+        factorials[i] = factorial(i);
+    }
+
+    n -= 1;
+
+    for (int i = 9; i >= 0; --i) {
+        int fact = factorials[i];
+        int index = n / fact;
+        n = n % fact;
+
+        int count = 0;
+        for (int j = 0; j < 10; ++j) {
+            if (!used[j]) {
+                if (count == index) {
+                    cout << digits[j];
+                    used[j] = true;
+                    break;
+                }
+                ++count;
+            }
+        }
+    }
+}
+
+
 int main() {
     int opcion;
 
@@ -727,6 +768,41 @@ int main() {
         }
         break;
         case 18:{
+            int n;
+            cout << "Ingresa un numero: ";
+            cin >> n;
+
+            int numeros[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+            bool usados[10] = {false};
+            int resultado[10];
+
+            n = n - 1;
+
+            for (int i = 9; i >= 0; i--) {
+                unsigned long long fact = factorial1(i);
+                int index = n / fact;
+                int cuenta = 0, j = 0;
+
+                while (cuenta <= index) {
+                    if (!usados[j]) {
+                        if (cuenta == index) {
+                            resultado[9 - i] = numeros[j];
+                            usados[j] = true;
+                            break;
+                        }
+                        cuenta++;
+                    }
+                    j++;
+                }
+
+                n %= fact;
+            }
+
+            cout << "La permutación numero " << (n + 1) << " es: ";
+            for (int i = 0; i < 10; i++) {
+                cout << resultado[i];
+            }
+            cout << endl;
 
         }
         break;
